@@ -1,5 +1,6 @@
 package ua.profitsoft.service;
 
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.profitsoft.model.DevBook;
 
@@ -15,11 +16,13 @@ public class BookParser {
         Map<String, Integer> localStats = new HashMap<>();
 
         try (var parser = objectMapper.createParser(file)) {
-            var iterator = objectMapper.readValues(parser, DevBook.class);
+            if (parser.nextToken() == JsonToken.START_ARRAY) {
 
-            while (iterator.hasNext()) {
-                DevBook book = iterator.next();
-                updateStats(localStats, book, attribute);
+                while (parser.nextToken() != JsonToken.END_ARRAY) {
+
+                    DevBook book = objectMapper.readValue(parser, DevBook.class);
+                    updateStats(localStats, book, attribute);
+                }
             }
         } catch (IOException e) {
             System.err.println("Error parsing file " + file.getName() + ": " + e.getMessage());
@@ -30,7 +33,11 @@ public class BookParser {
 
     private void updateStats(Map<String, Integer> stats, DevBook book, String attribute) {
         switch (attribute.toLowerCase()) {
-            case "author" -> stats.merge(book.author(), 1, Integer::sum);
+            case "author" -> {
+                if (book.author() != null) {
+                    stats.merge(book.author(), 1, Integer::sum);
+                }
+            }
             case "year" -> stats.merge(String.valueOf(book.yearPublished()), 1, Integer::sum);
             case "tags" -> {
                 if (book.tags() != null) {
@@ -39,7 +46,6 @@ public class BookParser {
                     }
                 }
             }
-            default -> throw new IllegalArgumentException("Unknown attribute: " + attribute);
         }
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<statistics>
+  <item>
+    <value>java</value>
+    <count>4096</count>
+  </item>
+  <item>
+    <value>python</value>
+    <count>2048</count>
+  </item>
+  <item>
+    <value>beginner</value>
+    <count>2048</count>
+  </item>
+  <item>
+    <value>advanced</value>
+    <count>2048</count>
+  </item>
+</statistics>

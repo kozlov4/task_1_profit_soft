@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 
 public class Main {
 
-    private static final int THREAD_COUNT = 8;
+    private static final int THREAD_COUNT = 1;
 
     public static void main(String[] args) {
         if (args.length < 2) {
